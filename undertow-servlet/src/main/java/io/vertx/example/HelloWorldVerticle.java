@@ -13,11 +13,10 @@ public class HelloWorldVerticle extends AbstractVerticle{
 
   public final static String COLLECTION = "collection";
   public final static String DBNAME = "sampledb";
-  public final static String CONNECTION_STRING = "mongodb://userWGN:gudvldUPj43ixvtk@mongodb/sampledb";
+  public final static String CONNECTION_STRING = System.getProperty("MONGO_URL");
 
   @Override
   public void start() {
-
     System.setProperty( "java.util.logging.SimpleFormatter.format", "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %2$s [%4$s] %5$s%6$s%n" );
     MongoClient mongo = setupMongo( vertx );
     String commandName = "buildInfo";
