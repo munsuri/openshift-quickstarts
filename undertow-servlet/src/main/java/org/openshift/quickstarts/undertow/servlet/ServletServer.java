@@ -26,6 +26,7 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
+import io.vertx.core.Vertx;
 
 import static io.undertow.servlet.Servlets.defaultContainer;
 import static io.undertow.servlet.Servlets.deployment;
@@ -40,7 +41,7 @@ public class ServletServer {
     public static final String MYAPP = "/";
 
     public static void main(final String[] args) {
-        try {
+        /*try {
 
             DeploymentInfo servletBuilder = deployment()
                     .setClassLoader(ServletServer.class.getClassLoader())
@@ -67,6 +68,7 @@ public class ServletServer {
             server.start();
         } catch (ServletException e) {
             throw new RuntimeException(e);
-        }
+        }*/
+        Vertx.vertx().createHttpServer().requestHandler( req -> req.response().end("Hello World!")).listen(8080);
     }
 }
