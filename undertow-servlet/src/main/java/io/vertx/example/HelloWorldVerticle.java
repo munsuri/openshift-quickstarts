@@ -88,23 +88,20 @@ public class HelloWorldVerticle extends AbstractVerticle{
   }
 
   private MongoClient setupMongo( Vertx vertx ){
-    String connectionString = System.getProperty("MONGO_URL") != null ?
-     System.getProperty("MONGO_URL") : System.getProperty("OPENSHIFT_MONGODB_DB_URL");
+    String connectionString = System.getenv("MONGO_URL") != null ?
+     System.getenv("MONGO_URL") : System.getenv("OPENSHIFT_MONGODB_DB_URL");
     if( connectionString == null ){
-      String serviceName = System.getProperty("DATABASE_SERVICE_NAME");
-      if( serviceName == null )
-        serviceName = "MONGODB";
-      else
-        serviceName = serviceName.toUpperCase();
-      String host = System.getProperty( serviceName + "_SERVICE_HOST" );
-      String port = System.getProperty( serviceName + "_SERVICE_PORT" );
-      String user = System.getProperty( serviceName + "_USER" );
-      String pwd = System.getProperty( serviceName + "_PASSWORD" );
-      String db = "sampledb";//System.getProperty( serviceName + "_DATABASE" );
+      String serviceName = "MONGODB";
+      String host = System.getenv( serviceName + "_SERVICE_HOST" );
+      String port = System.getenv( serviceName + "_SERVICE_PORT" );
+      String user = System.getenv( serviceName + "_USER" );
+      String pwd = System.getenv( serviceName + "_PASSWORD" );
+      String db = System.getenv( serviceName + "_DATABASE" );
       connectionString = "mongodb://";
       if( pwd != null )
-        connectionString += "mongodb://" + user + ':' + pwd + '@';
-      connectionString += host + ':' +  port + '/' + db;
+        connectionString += user + ':' + pwd + '@';
+      connectionString += (host == null ? "172.30.64.41" : host) + ':' + (port == null ? "27017" : port) +
+        '/' + (db == null ? "sampledb" : db);
     }
 
     JsonObject mongoConfig = new JsonObject()
