@@ -17,8 +17,8 @@ public class HelloWorldVerticle extends AbstractVerticle{
   public final static String DBNAME = "sampledb";
   private String mongoVersion = "unknown";
   //public final static String CONNECTION_STRING = "mongodb://127.0.0.1:27017/sampledb";
-  public final static String CONNECTION_STRING = System.getProperty("MONGO_URL") != null
-    ? System.getProperty("MONGO_URL") : System.getProperty("OPENSHIFT_MONGODB_DB_URL");
+  /*public final static String CONNECTION_STRING = System.getProperty("MONGO_URL") != null
+    ? System.getProperty("MONGO_URL") : System.getProperty("OPENSHIFT_MONGODB_DB_URL");*/
 
   @Override
   public void start(){
@@ -86,9 +86,28 @@ public class HelloWorldVerticle extends AbstractVerticle{
   }
 
   private MongoClient setupMongo( Vertx vertx ){
+    String connectionString = System.getProperty("MONGO_URL") != null
+    ? System.getProperty("MONGO_URL") : System.getProperty("OPENSHIFT_MONGODB_DB_URL");
+    if( connectionString ){
+      String serviceName = System.getProperty("DATABASE_SERVICE_NAME");
+      if( serviceName != null ){
+        serviceName = serviceName.toUpperCase();
+        String host = System.getProperty( serviceName + "_SERVICE_HOST" );
+        String port = System.getProperty( serviceName + "_SERVICE_PORT" );
+        String user = System.getProperty( serviceName + "_USER" );
+        String pwd = System.getProperty( serviceName + "_PASSWORD" );
+        String db = System.getProperty( serviceName + "_DATABASE" );
+        connectionString = "mongodb://";
+        if( pwd )
+          connectionString += "mongodb://" + user + ':' + pwd + '@';
+        connectionString += host + ':' +  port + '/' + db;
+      }
+    }
+
     JsonObject mongoConfig = new JsonObject()
       .put( "db_name", DBNAME )
-      .put( "connection_string", CONNECTION_STRING );
+      .put( "connection_string", connectionString );
+      //.put( "connection_string", CONNECTION_STRING );
     return MongoClient.createShared( vertx, mongoConfig );
   }
 }
