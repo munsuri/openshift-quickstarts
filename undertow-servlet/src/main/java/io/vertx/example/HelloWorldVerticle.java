@@ -92,18 +92,19 @@ public class HelloWorldVerticle extends AbstractVerticle{
      System.getProperty("MONGO_URL") : System.getProperty("OPENSHIFT_MONGODB_DB_URL");
     if( connectionString == null ){
       String serviceName = System.getProperty("DATABASE_SERVICE_NAME");
-      if( serviceName != null ){
+      if( serviceName == null )
+        serviceName = "MONGODB";
+      else
         serviceName = serviceName.toUpperCase();
-        String host = System.getProperty( serviceName + "_SERVICE_HOST" );
-        String port = System.getProperty( serviceName + "_SERVICE_PORT" );
-        String user = System.getProperty( serviceName + "_USER" );
-        String pwd = System.getProperty( serviceName + "_PASSWORD" );
-        String db = System.getProperty( serviceName + "_DATABASE" );
-        connectionString = "mongodb://";
-        if( pwd != null )
-          connectionString += "mongodb://" + user + ':' + pwd + '@';
-        connectionString += host + ':' +  port + '/' + db;
-      }
+      String host = System.getProperty( serviceName + "_SERVICE_HOST" );
+      String port = System.getProperty( serviceName + "_SERVICE_PORT" );
+      String user = System.getProperty( serviceName + "_USER" );
+      String pwd = System.getProperty( serviceName + "_PASSWORD" );
+      String db = "sampledb";//System.getProperty( serviceName + "_DATABASE" );
+      connectionString = "mongodb://";
+      if( pwd != null )
+        connectionString += "mongodb://" + user + ':' + pwd + '@';
+      connectionString += host + ':' +  port + '/' + db;
     }
 
     JsonObject mongoConfig = new JsonObject()
