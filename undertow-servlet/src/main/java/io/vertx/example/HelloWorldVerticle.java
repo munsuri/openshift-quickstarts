@@ -86,9 +86,9 @@ public class HelloWorldVerticle extends AbstractVerticle{
   }
 
   private MongoClient setupMongo( Vertx vertx ){
-    String connectionString = System.getProperty("MONGO_URL") != null
-    ? System.getProperty("MONGO_URL") : System.getProperty("OPENSHIFT_MONGODB_DB_URL");
-    if( connectionString ){
+    String connectionString = System.getProperty("MONGO_URL") != null ?
+     System.getProperty("MONGO_URL") : System.getProperty("OPENSHIFT_MONGODB_DB_URL");
+    if( connectionString == null ){
       String serviceName = System.getProperty("DATABASE_SERVICE_NAME");
       if( serviceName != null ){
         serviceName = serviceName.toUpperCase();
@@ -98,7 +98,7 @@ public class HelloWorldVerticle extends AbstractVerticle{
         String pwd = System.getProperty( serviceName + "_PASSWORD" );
         String db = System.getProperty( serviceName + "_DATABASE" );
         connectionString = "mongodb://";
-        if( pwd )
+        if( pwd != null )
           connectionString += "mongodb://" + user + ':' + pwd + '@';
         connectionString += host + ':' +  port + '/' + db;
       }
