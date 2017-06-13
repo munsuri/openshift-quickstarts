@@ -41,7 +41,7 @@ public class ServletServer {
     public static final String MYAPP = "/";
 
     public static void main(final String[] args) {
-        try {
+        /*try {
 
             DeploymentInfo servletBuilder = deployment()
                     .setClassLoader(ServletServer.class.getClassLoader())
@@ -68,7 +68,7 @@ public class ServletServer {
             server.start();
         } catch (ServletException e) {
             throw new RuntimeException(e);
-        }
-        //Vertx.vertx().createHttpServer().requestHandler( req -> req.response().end("Hello World!")).listen(8080);
+        }*/
+        Vertx.vertx().createHttpServer().requestHandler( req -> req.response().end("Hello World!")).listen(8080);
     }
 }
