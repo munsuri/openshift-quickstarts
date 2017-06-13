@@ -53,6 +53,7 @@ public class HelloWorldVerticle extends AbstractVerticle{
         mongo.close();
       }
     })
+      .doOnError( Throwable::printStackTrace )
       .subscribe()
     ;
   }
@@ -100,10 +101,10 @@ public class HelloWorldVerticle extends AbstractVerticle{
       connectionString = "mongodb://";
       if( pwd != null )
         connectionString += user + ':' + pwd + '@';
-      connectionString += (host == null ? "172.30.64.41" : host) + ':' + (port == null ? "27017" : port) +
+      connectionString += (host == null ? "127.0.0.1" : host) + ':' + (port == null ? "27017" : port) +
         '/' + (db == null ? "sampledb" : db);
     }
-
+    logger.info( connectionString );
     JsonObject mongoConfig = new JsonObject()
       .put( "db_name", DBNAME )
       .put( "connection_string", connectionString );
