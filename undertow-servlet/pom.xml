@@ -112,9 +112,9 @@
 
     <profiles>
         <profile>
-            <id>fat-jar</id>
+            <id>ufat-jar</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <build>
                 <pluginManagement>
@@ -160,9 +160,9 @@
         </profile>
 
         <profile>
-            <id>vfat-jar</id>
+            <id>fat-jar</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <build>
                 <pluginManagement>

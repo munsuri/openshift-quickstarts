@@ -24,7 +24,7 @@ public class HelloWorldVerticle extends AbstractVerticle{
   public void start(){
     logger.info( "start" );
     //System.setProperty( "java.util.logging.SimpleFormatter.format", "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %2$s [%4$s] %5$s%6$s%n" );
-    //initMongo();
+    initMongo();
     initServer();
   }
 
@@ -37,20 +37,22 @@ public class HelloWorldVerticle extends AbstractVerticle{
     logger.info( "initMongo" );
     vertx.rxExecuteBlocking( fut -> {
       MongoClient mongo = setupMongo( vertx );
-      String commandName = "buildInfo";
-      Single<JsonObject> res = mongo.rxRunCommand( commandName, new JsonObject().put( commandName, "" ) );
-      //mongoVersion = res.map( obj -> obj.getString( "version" ) ).toBlocking().value();
-      res
-        .map( obj -> obj.getString( "version" ) )
-        .doAfterTerminate( () -> {
-          logger.info( "initMongo: complete" );
-          fut.complete();
-        } )
-        .doOnError( Throwable::printStackTrace )
-        .subscribe( str -> mongoVersion = str )
-        ;
-      mongo.close();
-    } )
+      if( mongo != null ){
+        String commandName = "buildInfo";
+        Single<JsonObject> res = mongo.rxRunCommand( commandName, new JsonObject().put( commandName, "" ) );
+        //mongoVersion = res.map( obj -> obj.getString( "version" ) ).toBlocking().value();
+        res
+          .map( obj -> obj.getString( "version" ) )
+          .doAfterTerminate( () -> {
+            logger.info( "initMongo: complete" );
+            fut.complete();
+          } )
+          .doOnError( Throwable::printStackTrace )
+          .subscribe( str -> mongoVersion = str )
+          ;
+        mongo.close();
+      }
+    })
       .subscribe()
     ;
   }
