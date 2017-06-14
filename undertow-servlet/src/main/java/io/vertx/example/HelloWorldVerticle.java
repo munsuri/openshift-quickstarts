@@ -74,7 +74,7 @@ public class HelloWorldVerticle extends AbstractVerticle{
     } )
       .subscribe()
     ;*/
-    vertx.createHttpServer( new HttpServerOptions().setSsl( true ) )
+    vertx.createHttpServer()
       .requestHandler( req -> req.response().end("Hello " + "Vertx v3.4.1 and MongoDB v" + mongoVersion + "!") )
       .rxListen( 8080 )
       .observeOn( Schedulers.io() )
