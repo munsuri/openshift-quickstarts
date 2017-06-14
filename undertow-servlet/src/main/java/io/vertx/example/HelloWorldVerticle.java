@@ -1,12 +1,12 @@
 package io.vertx.example;
 
+import io.vertx.core.http.HttpServerOptions;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.ext.mongo.MongoClient;
-import rx.Scheduler;
 import rx.Single;
 import rx.schedulers.Schedulers;
 
@@ -74,7 +74,7 @@ public class HelloWorldVerticle extends AbstractVerticle{
     } )
       .subscribe()
     ;*/
-    vertx.createHttpServer()
+    vertx.createHttpServer( new HttpServerOptions().setSsl( true ) )
       .requestHandler( req -> req.response().end("Hello " + "Vertx v3.4.1 and MongoDB v" + mongoVersion + "!") )
       .rxListen( 8080 )
       .observeOn( Schedulers.io() )
@@ -88,9 +88,9 @@ public class HelloWorldVerticle extends AbstractVerticle{
     ;
   }
 
-  private MongoClient setupMongo( Vertx vertx ){
+  private String openshift3MongoConnectionURL(){
     String connectionString = System.getenv("MONGO_URL") != null ?
-     System.getenv("MONGO_URL") : System.getenv("OPENSHIFT_MONGODB_DB_URL");
+      System.getenv("MONGO_URL") : System.getenv("OPENSHIFT_MONGODB_DB_URL");
     if( connectionString == null ){
       String serviceName = "MONGODB";
       String host = System.getenv( serviceName + "_SERVICE_HOST" );
@@ -104,6 +104,12 @@ public class HelloWorldVerticle extends AbstractVerticle{
       connectionString += (host == null ? "127.0.0.1" : host) + ':' + (port == null ? "27017" : port) +
         '/' + (db == null ? "sampledb" : db);
     }
+
+    return connectionString;
+  }
+
+  private MongoClient setupMongo( Vertx vertx ){
+    String connectionString = openshift3MongoConnectionURL();
     logger.info( connectionString );
     JsonObject mongoConfig = new JsonObject()
       .put( "db_name", DBNAME )
